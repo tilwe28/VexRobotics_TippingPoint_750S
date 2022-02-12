@@ -104,13 +104,15 @@ void autonMiddle() {
   Lift.setStopping(vex::brakeType::hold);
   Claw.setBrake(vex::brakeType::hold);  
 
+  Drivetrain.setDriveVelocity(200, rpm);
+  Drivetrain.driveFor(forward, 185, inches, false);
   Claw.setVelocity(100, pct);
   Claw.spinFor(reverse, 0.5, seconds);
-  Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(forward, 190, inches, false);
+  Lift.setVelocity(100, pct);
+  Lift.spinFor(reverse, 0.5, sec);
   wait(3, seconds);
-  Claw.setVelocity(50, rpm);
-  Claw.spinFor(forward, 0.5, seconds);
+  Claw.setVelocity(75, pct);
+  Claw.spinFor(forward, 1, seconds);
   wait(0.5, sec);
   Drivetrain.driveFor(reverse, 160, inches, true);
 }
@@ -278,7 +280,7 @@ void autonomous(void) {
   //5 is skills
   //6 is 40 left
   //default is auton default
-  runAuton(5);
+  runAuton(2);
 
   
 
