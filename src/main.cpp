@@ -105,7 +105,7 @@ void autonMiddle() {
   Claw.setBrake(vex::brakeType::hold);  
 
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(forward, 170, inches, false);
+  Drivetrain.driveFor(forward, 175, inches, false);
   Claw.setVelocity(100, pct);
   Claw.spinFor(reverse, 0.5, seconds);
   Lift.setVelocity(100, pct);
