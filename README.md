@@ -7,4 +7,5 @@ Team: 750S (Sparks)
 	   - Auton code
 	   - Skills code
 
+![Promote Video Preview](./PromoteVideoPreviewImage.png)
 [![Promote Video](./PromoteVideoPreviewImage.png)](https://www.youtube.com/watch?v=S-u0EcURYkQ)
