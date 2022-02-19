@@ -128,14 +128,14 @@ int rc_auto_loop_function_Controller1() {
       // Controller1.Screen.print("Clamp: ");
       // Controller1.Screen.print(temp);
 
-      if (temp >= 70) {//70
+      if (temp >= 10) {//70
         if (needsToVibrate == 1)//75
           needsToVibrate = 0;
       } else {
         needsToVibrate = 1;
       }
 
-      if (temp >= 80) {
+      if (temp >= 10) {//80
         Controller1.rumble("..");
       }
 
