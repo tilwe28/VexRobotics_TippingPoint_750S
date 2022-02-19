@@ -157,6 +157,7 @@ void skills() {
   Lift.setStopping(vex::brakeType::hold);
   Claw.setBrake(vex::brakeType::hold);
 
+  //Get mobile goal on back and turn
   Lift.setVelocity(100, pct);
   Lift.spinFor(reverse, 0.5, seconds);
   Claw.setVelocity(100, pct);
@@ -173,6 +174,7 @@ void skills() {
   Drivetrain.setTurnVelocity(100, pct);
   Drivetrain.turnFor(right, 193.5, deg);//197.5 //190
   
+  //Get yellow mobile goal and stack
   Drivetrain.stop();
   Drivetrain.driveFor(forward, 120, inches, false);
   wait(2.5, seconds);
@@ -199,7 +201,7 @@ void skills() {
   Lift.spinFor(forward, 0.4, seconds);//0.4
   
 
-
+  //Take win point mobile goal and stack on opposite bridge
   wait(1, sec);
   Drivetrain.turnFor(left, 191, degrees);//200
   Drivetrain.stop();
