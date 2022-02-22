@@ -125,7 +125,7 @@ void autonDefault() {
   Drivetrain.driveFor(forward, 130, inches, false);
   wait(2.2, seconds);
   Claw.setVelocity(50, rpm);
-  Claw.spinFor(forward, 0.5, seconds);
+  Claw.spinFor(forward, 1, seconds);
   Drivetrain.driveFor(reverse, 110, inches, true);
 }
 
@@ -148,8 +148,8 @@ void fortyLeft() {
   Clamp.setBrake(vex::brakeType::hold);
   wait(0.5, sec);
   Drivetrain.turnFor(right, 86, deg);
-  Drivetrain.driveFor(reverse, 75, inches, false);
-  wait(1.6, sec);
+  Drivetrain.driveFor(reverse, 85, inches, false);
+  wait(1.825, sec);
   Clamp.spinFor(reverse, 1.3, sec);
   Drivetrain.turnFor(left, 115, deg);
   Drivetrain.driveFor(reverse, 120, inches);
@@ -174,10 +174,10 @@ void fortyRight() {
   Clamp.setBrake(vex::brakeType::hold);
   wait(0.5, sec);
   Drivetrain.turnFor(left, 86, deg);
-  Drivetrain.driveFor(reverse, 75, inches, false);
-  wait(1.6, sec);
+  Drivetrain.driveFor(reverse, 85, inches, false);
+  wait(1.825, sec);
   Clamp.spinFor(reverse, 1.3, sec);
-  Drivetrain.turnFor(right, 115, deg);
+  Drivetrain.turnFor(right, 130, deg);
   Drivetrain.driveFor(reverse, 120, inches);
 }
 
@@ -327,8 +327,9 @@ void autonomous(void) {
   //4 is right side win point
   //5 is skills
   //6 is 40 left
+  //7 is 40 right
   //default is auton default
-  runAuton(6);
+  runAuton(7);
 
   
 
