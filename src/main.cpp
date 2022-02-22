@@ -26,6 +26,10 @@ competition Competition;
 
 
 
+bool pid = false;
+
+
+
 
 // define your global instances of motors and other devices here
 
@@ -38,6 +42,11 @@ competition Competition;
 /*  function is only called once after the V5 has been powered on and        */
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
+
+// std::to_string();
+// to_string();
+
+//vex::brakeType::hold;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
@@ -293,6 +302,68 @@ void skills() {
   // Claw.spinFor(reverse, 0.5, seconds);
 }
 
+
+//constants to modify in the future
+double kP = 0.12;
+double kI = 0.12;
+double kD = 0.12;
+
+int error; //position - desired value
+int prevError = 0; //position 20 ms ago
+int derivative; //error - prevError;
+int totalError = 0; //totalError = totalError + error;
+
+bool resetDriveSensors = false;
+
+
+//centimeters / 7pi * 360
+int desiredValue = 360;
+
+
+int drivePID() {
+
+  while (pid) {
+
+
+    if (resetDriveSensors) {
+      resetDriveSensors = false;
+
+      LeftDriveSmart.setPosition(0, degrees);
+      RightDriveSmart.setPosition(0, degrees);
+    }
+
+    int leftMotorPosition = LeftDriveSmart.position(degrees);
+    int rightMotorPosition = RightDriveSmart.position(degrees);
+
+    int avgPos = (leftMotorPosition + rightMotorPosition)/2;
+
+    desiredValue *= (360/(7 * 3.14159));
+
+    //Potential
+    error = avgPos - desiredValue;
+
+    //Derivative
+    derivative = error - prevError;
+
+    //Integral 
+    totalError += error;
+
+    double motorPower = error * kP + derivative * kD + totalError * kI;
+
+    LeftDriveSmart.spin(forward, motorPower, volt);
+    RightDriveSmart.spin(forward, motorPower, volt);
+
+
+
+    prevError = error;
+
+    vex::task::sleep(20);
+  }
+
+
+  return 1;
+}
+
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /*                              Autonomous Task                              */
@@ -312,24 +383,40 @@ void runAuton(int index) {
     case 5: skills(); break;
     case 6: fortyLeft(); break;
     case 7: fortyRight(); break;
-    default: autonMiddle(); break;
+    default: autonDefault(); break;
   }
 }
 
 void autonomous(void) {
-  
-  Lift.setStopping(vex::brakeType::hold);
-  Claw.setBrake(vex::brakeType::hold);
 
-  //1 is auton default
-  //2 is auton middle
-  //3 is left side win point
-  //4 is right side win point
-  //5 is skills
-  //6 is 40 left
-  //7 is 40 right
-  //default is auton default
-  runAuton(7);
+
+  vex::task PID(drivePID);
+  resetDriveSensors = true;
+  desiredValue = 300;
+
+  vex::task::sleep(1000);
+
+  desiredValue = 200;
+  
+
+
+
+  // Lift.setStopping(vex::brakeType::hold);
+  // Claw.setBrake(vex::brakeType::hold);
+
+  // //1 is auton default
+  // //2 is auton middle
+  // //3 is left side win point
+  // //4 is right side win point
+  // //5 is skills
+  // //6 is 40 left
+  // //7 is 40 right
+  // //default is auton default
+  runAuton(5);
+
+
+
+
 
   
 
@@ -351,7 +438,44 @@ void autonomous(void) {
 
 void usercontrol(void) {
 
-  
+  pid = false;
+
+  while(true) {
+
+
+    //drive
+    double turnImportance = 0.5;
+
+    
+    double fP = c1.Axis3.position(percent);
+    double tP = c1.Axis1.position(percent);
+
+    double tV = tP * 0.12;
+    double fV = fP * 0.12 * (1-(std::abs(tV)/12) * turnImportance);
+
+
+    LeftDriveSmart.spin(forward, fV-tV, volt);
+    RightDriveSmart.spin(forward, fV+tV, volt);
+
+    //Lift
+    Lift.setStopping(brakeType::hold);
+    if (c1.ButtonUp.pressing()) Lift.spin(forward, 100, pct);
+    else if (c1.ButtonDown.pressing()) Lift.spin(reverse, 100, pct);
+
+    //Claw
+    Claw.setBrake(brakeType::hold);
+    if (c1.ButtonL1.pressing()) Claw.spin(reverse, 100, pct);
+    else if (c1.ButtonL2.pressing()) Claw.spin(forward, 100, pct);
+
+    //Clamp
+    //if (c1.ButtonR1.pressing()) Clamp.set(true);
+    //if (c1.ButtonR2.pressing()) Clamp.set(false);
+
+
+
+    wait(5, msec);
+  }
+
   
 
 }
