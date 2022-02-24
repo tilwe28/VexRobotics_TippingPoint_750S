@@ -54,6 +54,11 @@ void pre_auton(void) {
 
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+
+  LeftDriveSmart.setStopping(brakeType::brake);
+  RightDriveSmart.setStopping(brakeType::brake);
+
+
 }
 
 void autonRightSideWinAndMiddle() {
@@ -305,19 +310,29 @@ void skills() {
 
 //constants to modify in the future
 double kP = 0.12;
-double kI = 0.12;
-double kD = 0.12;
+double kI = 0.12; //0.12
+double kD = 0.12; //0.12
+
+double turnkP = 1;
+double turnkI = 1;
+double turnkD = 1;
 
 int error; //position - desired value
 int prevError = 0; //position 20 ms ago
 int derivative; //error - prevError;
 int totalError = 0; //totalError = totalError + error;
 
+int turnError;
+int turnPrevError = 0;
+int turnDerivative;
+int turnTotalError = 0;
+
 bool resetDriveSensors = false;
 
 
 //centimeters / 7pi * 360
-int desiredValue = 360;
+double desiredValue = 5;
+double desiredTurnValue = 0;
 
 
 int drivePID() {
@@ -332,12 +347,12 @@ int drivePID() {
       RightDriveSmart.setPosition(0, degrees);
     }
 
-    int leftMotorPosition = LeftDriveSmart.position(degrees);
-    int rightMotorPosition = RightDriveSmart.position(degrees);
+    int leftMotorPosition = LeftDriveSmart.position(degrees) ;
+    int rightMotorPosition = RightDriveSmart.position(degrees) ;
 
     int avgPos = (leftMotorPosition + rightMotorPosition)/2;
 
-    desiredValue *= (360/(7 * 3.14159));
+    desiredValue *= (360/(4 * 3.14159));
 
     //Potential
     error = avgPos - desiredValue;
@@ -348,16 +363,30 @@ int drivePID() {
     //Integral 
     totalError += error;
 
-    double motorPower = error * kP + derivative * kD + totalError * kI;
+    //Turn Potential
+    turnError = DrivetrainInertial.heading() - desiredTurnValue;
 
-    LeftDriveSmart.spin(forward, motorPower, volt);
-    RightDriveSmart.spin(forward, motorPower, volt);
+    //Derivative
+    turnDerivative = turnError - turnPrevError;
+
+    //Integral
+    turnTotalError += turnError;
+
+    double motorPower = error * kP + derivative * kD + totalError * kI;
+    c1.Screen.clearLine(3);
+    c1.Screen.print(motorPower);
+
+    double turnMotorPower = turnError * kP + turnDerivative * kD + turnTotalError * kI * 0;
+
+    LeftDriveSmart.spin(forward, motorPower + turnMotorPower, volt);
+    RightDriveSmart.spin(forward, motorPower - turnMotorPower, volt);
 
 
 
     prevError = error;
+    turnPrevError = turnError;
 
-    vex::task::sleep(20);
+    vex::task::sleep(2000);
   }
 
 
@@ -390,13 +419,19 @@ void runAuton(int index) {
 void autonomous(void) {
 
 
+  
+  pid = true;
   vex::task PID(drivePID);
   resetDriveSensors = true;
-  desiredValue = 300;
+  desiredValue = 5;
 
   vex::task::sleep(1000);
+  resetDriveSensors = true;
+  //desiredValue = 3;
 
-  desiredValue = 200;
+    // vex::task::sleep(1000);
+
+    // desiredValue = 5;
   
 
 
@@ -412,7 +447,7 @@ void autonomous(void) {
   // //6 is 40 left
   // //7 is 40 right
   // //default is auton default
-  runAuton(5);
+  //runAuton(5);
 
 
 
@@ -440,37 +475,42 @@ void usercontrol(void) {
 
   pid = false;
 
-  while(true) {
+  //c1.Screen.print(10);
 
+  while(true) {
+    //c1.Screen.clearLine(3);
 
     //drive
     double turnImportance = 0.5;
 
     
-    double fP = c1.Axis3.position(percent);
-    double tP = c1.Axis1.position(percent);
+    double fP = c1.Axis3.position(percent) * -1;
+    //c1.Screen.print(fP);
+    double tP = c1.Axis1.position(percent) * -1;
 
     double tV = tP * 0.12;
     double fV = fP * 0.12 * (1-(std::abs(tV)/12) * turnImportance);
 
 
-    LeftDriveSmart.spin(forward, fV-tV, volt);
-    RightDriveSmart.spin(forward, fV+tV, volt);
+    LeftDriveSmart.spin(forward, fV+tV, volt);
+    RightDriveSmart.spin(forward, fV-tV, volt);
 
     //Lift
     Lift.setStopping(brakeType::hold);
     if (c1.ButtonUp.pressing()) Lift.spin(forward, 100, pct);
     else if (c1.ButtonDown.pressing()) Lift.spin(reverse, 100, pct);
+    else Lift.stop();
 
     //Claw
     Claw.setBrake(brakeType::hold);
     if (c1.ButtonL1.pressing()) Claw.spin(reverse, 100, pct);
     else if (c1.ButtonL2.pressing()) Claw.spin(forward, 100, pct);
+    else Claw.stop();
 
-    //Clamp
-    //if (c1.ButtonR1.pressing()) Clamp.set(true);
-    //if (c1.ButtonR2.pressing()) Clamp.set(false);
-
+    //Front Clamp
+    if (c1.ButtonR1.pressing()) Frontclamp.set(true);
+    else if (c1.ButtonR2.pressing()) Frontclamp.set(false);  
+    //c1.Screen.print(Frontclamp.value());
 
 
     wait(5, msec);
