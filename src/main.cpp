@@ -331,7 +331,7 @@ bool resetDriveSensors = false;
 
 
 //centimeters / 7pi * 360
-double desiredValue = 5;
+double desiredValue = 0;
 double desiredTurnValue = 0;
 
 
@@ -364,7 +364,7 @@ int drivePID() {
     totalError += error;
 
     //Turn Potential
-    turnError = DrivetrainInertial.heading() - desiredTurnValue;
+    //turnError = DrivetrainInertial.heading() - desiredTurnValue;
 
     //Derivative
     turnDerivative = turnError - turnPrevError;
@@ -374,7 +374,7 @@ int drivePID() {
 
     double motorPower = error * kP + derivative * kD + totalError * kI;
     c1.Screen.clearLine(3);
-    c1.Screen.print(motorPower);
+    c1.Screen.print(error);
 
     double turnMotorPower = turnError * kP + turnDerivative * kD + turnTotalError * kI * 0;
 
@@ -423,7 +423,7 @@ void autonomous(void) {
   pid = true;
   vex::task PID(drivePID);
   resetDriveSensors = true;
-  desiredValue = 5;
+  desiredValue = 0;
 
   vex::task::sleep(1000);
   resetDriveSensors = true;
