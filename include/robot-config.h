@@ -12,7 +12,7 @@ extern motor_group RightDriveSmart;
 extern motor_group Lift;
 extern motor Claw;
 extern motor Clamp;
-extern digital_out pneumonia;
+extern digital_out Frontclamp;
 extern controller c1;
 
 
