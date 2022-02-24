@@ -9,11 +9,11 @@ using code = vision::code;
 brain  Brain;
 
 // VEXcode device constructors
-motor leftMotorA = motor(PORT20, ratio18_1, false);
-motor leftMotorB = motor(PORT16, ratio18_1, false);
+motor leftMotorA = motor(PORT16, ratio18_1, false);
+motor leftMotorB = motor(PORT20, ratio18_1, false);
 motor_group LeftDriveSmart = motor_group(leftMotorA, leftMotorB);
-motor rightMotorA = motor(PORT11, ratio18_1, true);
-motor rightMotorB = motor(PORT13, ratio18_1, true);
+motor rightMotorA = motor(PORT13, ratio18_1, true);
+motor rightMotorB = motor(PORT11, ratio18_1, true);
 motor_group RightDriveSmart = motor_group(rightMotorA, rightMotorB);
 inertial DrivetrainInertial = inertial(PORT1);
 smartdrive Ddd = smartdrive(LeftDriveSmart, RightDriveSmart, DrivetrainInertial, 319.9, 320, 40, mm, 1);
@@ -21,9 +21,9 @@ drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 320,
 motor LiftMotorA = motor(PORT19, ratio36_1, false);
 motor LiftMotorB = motor(PORT12, ratio36_1, true);
 motor_group Lift = motor_group(LiftMotorA, LiftMotorB);
-motor Claw = motor(PORT10, ratio36_1, false);
-motor Clamp = motor(PORT14, ratio18_1, false);
-digital_out clamp = digital_out(Brain.ThreeWirePort.H);
+motor Claw = motor(PORT14, ratio36_1, false);
+motor Clamp = motor(PORT10, ratio18_1, false);
+digital_out Frontclamp = digital_out(Brain.ThreeWirePort.H);
 controller c1 = controller(primary);
 
 // VEXcode generated functions
@@ -48,6 +48,7 @@ void rumbleController(int rumbling) {
 
 // define a task that will handle monitoring inputs from c1
 int rc_auto_loop_function_c1() {
+  c1.Screen.print(5);
   // process the controller input every 20 milliseconds
   // update the motors based on the input values
   while(true) {
@@ -183,12 +184,11 @@ int rc_auto_loop_function_c1() {
 
 
       // //check the ButtonLeft/ButtonRight status to control Pneumonia
-      // if (c1.ButtonLeft.pressing()) {
-      //   pneumonia.set(true);
-      // }
-      // else if (c1.ButtonRight.pressing()) {
-      //   pneumonia.set(false);
-      // }
+      //  if (c1.ButtonLeft.pressing()) {
+      //    clamp.set(true);
+      //  }else if (c1.ButtonRight.pressing()) {
+      //    clamp.set(false);
+      //  }
 
       
 
@@ -216,10 +216,17 @@ void vexcodeInit( void ) {
   Brain.Screen.setCursor(2, 1);
   // calibrate the drivetrain Inertial
   wait(200, msec);
+  DrivetrainInertial.calibrate();
+  Brain.Screen.print("Calibrating Inertial for Drivetrain");
+  // wait for the Inertial calibration process to finish
+  while (DrivetrainInertial.isCalibrating()) {
+    wait(25, msec);
+  }
+  wait(200, msec);
   // reset the screen now that the calibration is complete
   Brain.Screen.clearScreen();
-  Brain.Screen.setCursor(1,1);
-  task rc_auto_loop_task_c1(rc_auto_loop_function_c1);
+  //Brain.Screen.cursor(1,1);
+  //task rc_auto_loop_task_c1(rc_auto_loop_function_c1);
   wait(50, msec);
   Brain.Screen.clearScreen();
 }
