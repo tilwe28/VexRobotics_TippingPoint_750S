@@ -71,19 +71,19 @@ void autonRightSideWinAndMiddle() {
   Drivetrain.setTurnVelocity(200, rpm);
   Drivetrain.turnFor(right, 97.5, deg);
   Drivetrain.setDriveVelocity(200,rpm);
-  Drivetrain.driveFor(forward, 52, inches, false);
+  Drivetrain.driveFor(reverse, 52, inches, false);
   wait(1, sec);
   Frontclamp.set(true);
   wait(0.5, sec);
-  Drivetrain.driveFor(reverse, 25, inches);
+  Drivetrain.driveFor(forward, 25, inches);
   Frontclamp.set(false);
-  Drivetrain.driveFor(reverse, 10, inches);
+  Drivetrain.driveFor(forward, 10, inches);
   Drivetrain.turnFor(left, 200, degrees);
-  Drivetrain.driveFor(forward, 130, inches, false);
+  Drivetrain.driveFor(reverse, 130, inches, false);
   wait(2.5, sec);
   Frontclamp.set(true);
   wait(1, sec);
-  Drivetrain.driveFor(reverse, 100, inches, true);
+  Drivetrain.driveFor(forward, 100, inches, true);
 
 }
 
@@ -93,20 +93,20 @@ void autonLeftSideWinPoint() {
   Claw.setBrake(vex::brakeType::hold);  
 
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(forward, 20, inches);
+  Drivetrain.driveFor(reverse, 20, inches);
   wait(0.3, sec);
   Frontclamp.set(true);
   wait(0.5, sec);
-  Drivetrain.driveFor(reverse, 20, inches);
+  Drivetrain.driveFor(forward, 20, inches);
   Frontclamp.set(false);
-  Drivetrain.driveFor(reverse, 10, inches, true);
+  Drivetrain.driveFor(forward, 10, inches, true);
   Drivetrain.setTurnVelocity(100, pct);
   Drivetrain.turnFor(left, 120, degrees);
-  Drivetrain.driveFor(forward, 170, inches, false);
+  Drivetrain.driveFor(reverse, 170, inches, false);
   wait(3, sec);
   Frontclamp.set(true);
   wait(0.5, sec);
-  Drivetrain.driveFor(reverse, 150, inches);
+  Drivetrain.driveFor(forward, 150, inches);
 
 }
 
@@ -115,14 +115,14 @@ void autonMiddle() {
   Claw.setBrake(vex::brakeType::hold);  
 
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(forward, 175, inches, false);
+  Drivetrain.driveFor(reverse, 175, inches, false);
   Frontclamp.set(false);
   Lift.setVelocity(100, pct);
   Lift.spinFor(reverse, 0.5, sec);
   wait(3, seconds);
   Frontclamp.set(true);
   wait(0.5, sec);
-  Drivetrain.driveFor(reverse, 160, inches, true);
+  Drivetrain.driveFor(forward, 160, inches, true);
 }
 
 void autonDefault() {
@@ -130,10 +130,10 @@ void autonDefault() {
   Claw.setBrake(vex::brakeType::hold);  
 
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(forward, 130, inches, false);
+  Drivetrain.driveFor(reverse, 130, inches, false);
   wait(2.2, seconds);
   Frontclamp.set(true);
-  Drivetrain.driveFor(reverse, 110, inches, true);
+  Drivetrain.driveFor(forward, 110, inches, true);
 }
 
 void fortyLeft() {
@@ -142,7 +142,7 @@ void fortyLeft() {
 
 
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(forward, 160, inches, false);
+  Drivetrain.driveFor(reverse, 160, inches, false);
   Frontclamp.set(false);
   Lift.setVelocity(100, pct);
   Lift.spinFor(reverse, 0.5, sec);
@@ -150,14 +150,14 @@ void fortyLeft() {
   Frontclamp.set(true);
   Claw.setVelocity(100, pct);
   Claw.spinFor(forward, 0.75, sec);
-  Clamp.setBrake(vex::brakeType::hold);
+  Claw.setBrake(vex::brakeType::hold);
   wait(0.5, sec);
   Drivetrain.turnFor(right, 86, deg);
-  Drivetrain.driveFor(reverse, 85, inches, false);
+  Drivetrain.driveFor(forward, 85, inches, false);
   wait(1.825, sec);
   Claw.spinFor(reverse, 1.3, sec);
   Drivetrain.turnFor(left, 115, deg);
-  Drivetrain.driveFor(reverse, 120, inches);
+  Drivetrain.driveFor(forward, 120, inches);
 }
 
 void fortyRight() {
@@ -166,7 +166,7 @@ void fortyRight() {
 
 
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(forward, 160, inches, false);
+  Drivetrain.driveFor(reverse, 160, inches, false);
   Frontclamp.set(false);
   Lift.setVelocity(100, pct);
   Lift.spinFor(reverse, 0.5, sec);
@@ -174,14 +174,14 @@ void fortyRight() {
   Frontclamp.set(true);
   Claw.setVelocity(100, pct);
   Claw.spinFor(forward, 0.75, sec);
-  Clamp.setBrake(vex::brakeType::hold);
+  Claw.setBrake(vex::brakeType::hold);
   wait(0.5, sec);
   Drivetrain.turnFor(left, 86, deg);
-  Drivetrain.driveFor(reverse, 85, inches, false);
+  Drivetrain.driveFor(forward, 85, inches, false);
   wait(1.825, sec);
   Claw.spinFor(reverse, 1.3, sec);
   Drivetrain.turnFor(right, 130, deg);
-  Drivetrain.driveFor(reverse, 120, inches);
+  Drivetrain.driveFor(forward, 120, inches);
 }
 
 void skills() {
@@ -196,25 +196,25 @@ void skills() {
   Claw.setVelocity(100, pct);
   Claw.spinFor(forward, 0.75, seconds);
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(reverse, 20, inches, false);
+  Drivetrain.driveFor(forward, 20, inches, false);
   wait(0.8, seconds);
   Claw.setVelocity(50, pct);
   Claw.spinFor(reverse, 1, seconds);//0.75
-  Drivetrain.driveFor(forward, 17.5, inches, true);
-  Clamp.setBrake(vex::brakeType::hold);
+  Drivetrain.driveFor(reverse, 17.5, inches, true);
+  Claw.setBrake(vex::brakeType::hold);
   Drivetrain.setTurnVelocity(100, pct);
   Drivetrain.turnFor(right, 193.5, deg);//197.5 //190
   
   //Get yellow mobile goal and stack
   Drivetrain.stop();
-  Drivetrain.driveFor(forward, 120, inches, false);
+  Drivetrain.driveFor(reverse, 120, inches, false);
   wait(2.5, seconds);
   Frontclamp.set(true);
   wait(0.5, sec);
   Drivetrain.turnFor(right, 90, degrees);//92.5
   Drivetrain.stop();
   wait(100, msec);
-  Drivetrain.driveFor(forward, 82.5, inches, false);
+  Drivetrain.driveFor(reverse, 82.5, inches, false);
   //wait(0.1, sec);
   Lift.setVelocity(100, pct);
   Lift.spinFor(forward, 2.2, seconds);
@@ -224,10 +224,10 @@ void skills() {
   Lift.spinFor(reverse, 0.8, seconds);
   Frontclamp.set(false);
   wait(.8, sec);
-  Drivetrain.driveFor(reverse, 10, inches, false);
+  Drivetrain.driveFor(forward, 10, inches, false);
   Lift.spinFor(forward, 0.4, sec);
   wait(0.2, sec);
-  Drivetrain.driveFor(reverse, 10, inches, false);
+  Drivetrain.driveFor(forward, 10, inches, false);
   Lift.spinFor(forward, 0.4, seconds);//0.4
   
 
@@ -237,15 +237,15 @@ void skills() {
   Drivetrain.stop();
   wait(1, sec);
   Lift.spinFor(reverse, 2, seconds);
-  Drivetrain.driveFor(forward, 95, inches, false);
+  Drivetrain.driveFor(reverse, 95, inches, false);
   Frontclamp.set(false);
   wait (2, seconds);
   Frontclamp.set(true);
   wait(0.5, sec);
-  Drivetrain.driveFor(reverse, 10, inches, true);
+  Drivetrain.driveFor(forward, 10, inches, true);
   Drivetrain.turnFor(left, 297.5, degrees);//300 //292.5
   Drivetrain.stop();
-  Drivetrain.driveFor(forward, 180, inches, false); //160
+  Drivetrain.driveFor(reverse, 180, inches, false); //160
   wait(1.4, sec);//2
   Lift.spinFor(forward, 2, seconds);
   wait(2, sec);
@@ -254,25 +254,25 @@ void skills() {
   Lift.spinFor(reverse, 0.6, seconds);
   Frontclamp.set(false);
   wait(1, sec);
-  Drivetrain.driveFor(reverse, 10, inches, false);
+  Drivetrain.driveFor(forward, 10, inches, false);
   Lift.spinFor(forward, 0.4, sec);
   wait(0.4, sec);
-  Drivetrain.driveFor(reverse, 10, inches, true);
+  Drivetrain.driveFor(forward, 10, inches, true);
   //Drivetrain.turnFor(right, 10, degrees);
   Lift.spinFor(forward, 0.6, seconds);
   Drivetrain.turnFor(right, 30, degrees);//
-  Drivetrain.driveFor(reverse, 110, inches); //90
+  Drivetrain.driveFor(forward, 110, inches); //90
 
   //140
   Drivetrain.turnFor(left, 102.5, deg);
   Lift.spinFor(reverse, 2, sec);
   Frontclamp.set(false);
   wait(0.5, sec);
-  Drivetrain.driveFor(forward, 120, inches, false);
+  Drivetrain.driveFor(reverse, 120, inches, false);
   wait(2, sec);
   Frontclamp.set(true);
   wait(0.8, sec);
-  Drivetrain.driveFor(reverse, 170, inches, true);
+  Drivetrain.driveFor(forward, 170, inches, true);
   Drivetrain.stop();
 }
 
@@ -389,7 +389,6 @@ void autonomous(void) {
 
 
   
-<<<<<<< HEAD
   // pid = true;
   // vex::task PID(drivePID);
   // resetDriveSensors = true;
@@ -397,12 +396,10 @@ void autonomous(void) {
 
   // vex::task::sleep(1000);
   // resetDriveSensors = true;
-=======
   pid = true;
   vex::task PID(drivePID);
   resetDriveSensors = true;
   desiredValue = 0;
->>>>>>> 374e9ef67b6e1bf4a285b986c83a0ba40f4aee1a
 
   //desiredValue = 3;
 
