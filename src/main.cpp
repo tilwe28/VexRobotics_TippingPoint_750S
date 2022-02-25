@@ -485,8 +485,8 @@ void usercontrol(void) {
     else Claw.stop();
 
     //Front Clamp
-    if (c1.ButtonR1.pressing()) Frontclamp.set(true);
-    else if (c1.ButtonR2.pressing()) Frontclamp.set(false);  
+    if (c1.ButtonR1.pressing()) Frontclamp.set(false);
+    else if (c1.ButtonR2.pressing()) Frontclamp.set(true);  
     //c1.Screen.print(Frontclamp.value());
 
 
