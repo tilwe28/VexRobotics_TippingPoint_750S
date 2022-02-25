@@ -9,20 +9,20 @@ using code = vision::code;
 brain  Brain;
 
 // VEXcode device constructors
-motor leftMotorA = motor(PORT16, ratio18_1, false);
-motor leftMotorB = motor(PORT20, ratio18_1, false);
+motor leftMotorA = motor(PORT3, ratio18_1, false);
+motor leftMotorB = motor(PORT10, ratio18_1, false);
 motor_group LeftDriveSmart = motor_group(leftMotorA, leftMotorB);
-motor rightMotorA = motor(PORT13, ratio18_1, true);
-motor rightMotorB = motor(PORT11, ratio18_1, true);
+motor rightMotorA = motor(PORT1, ratio18_1, true);
+motor rightMotorB = motor(PORT2, ratio18_1, true);
 motor_group RightDriveSmart = motor_group(rightMotorA, rightMotorB);
 inertial DrivetrainInertial = inertial(PORT1);
 smartdrive Ddd = smartdrive(LeftDriveSmart, RightDriveSmart, DrivetrainInertial, 319.9, 320, 40, mm, 1);
 drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 320, 40, mm, 1);
-motor LiftMotorA = motor(PORT19, ratio36_1, false);
-motor LiftMotorB = motor(PORT12, ratio36_1, true);
+motor LiftMotorA = motor(PORT20, ratio36_1, false);
+motor LiftMotorB = motor(PORT11, ratio36_1, true);
 motor_group Lift = motor_group(LiftMotorA, LiftMotorB);
-motor Claw = motor(PORT14, ratio36_1, false);
-motor Clamp = motor(PORT10, ratio18_1, false);
+motor Claw = motor(PORT18, ratio36_1, false);
+//motor Clamp = motor(PORT10, ratio18_1, false);
 digital_out Frontclamp = digital_out(Brain.ThreeWirePort.H);
 controller c1 = controller(primary);
 
