@@ -48,6 +48,12 @@ bool pid = false;
 
 //vex::brakeType::hold;
 
+/*
+ * With new speed 
+ * multiply distance value by about 0.611
+ * multiply turn value by about 0.66
+ */
+
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
@@ -58,6 +64,19 @@ void pre_auton(void) {
   LeftDriveSmart.setStopping(brakeType::brake);
   RightDriveSmart.setStopping(brakeType::brake);
 
+  DrivetrainInertial.setHeading(0, deg);
+
+
+}
+
+void inertialGyro(double d, bool b) {
+
+  Ddd.turnToHeading(d, degrees, b);
+  
+  while (Ddd.isTurning()) {
+    if (Ddd.heading() + 1 == d || Ddd.heading()-1 == d)
+      Ddd.stop();
+  }
 
 }
 
@@ -68,8 +87,8 @@ void autonRightSideWinAndMiddle() {
 
   // LeftDriveSmart.spinFor(reverse, 1.05, seconds); (if shit goes wrong)
   Frontclamp.set(false);
-  Drivetrain.setTurnVelocity(200, rpm);
-  Drivetrain.turnFor(right, 97.5, deg);
+  Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.turnFor(left, 97.5, deg);
   Drivetrain.setDriveVelocity(200,rpm);
   Drivetrain.driveFor(reverse, 52, inches, false);
   wait(1, sec);
@@ -78,7 +97,7 @@ void autonRightSideWinAndMiddle() {
   Drivetrain.driveFor(forward, 25, inches);
   Frontclamp.set(false);
   Drivetrain.driveFor(forward, 10, inches);
-  Drivetrain.turnFor(left, 200, degrees);
+  Drivetrain.turnFor(right, 200, degrees);
   Drivetrain.driveFor(reverse, 130, inches, false);
   wait(2.5, sec);
   Frontclamp.set(true);
@@ -101,7 +120,7 @@ void autonLeftSideWinPoint() {
   Frontclamp.set(false);
   Drivetrain.driveFor(forward, 10, inches, true);
   Drivetrain.setTurnVelocity(100, pct);
-  Drivetrain.turnFor(left, 120, degrees);
+  Drivetrain.turnFor(right, 120, degrees);
   Drivetrain.driveFor(reverse, 170, inches, false);
   wait(3, sec);
   Frontclamp.set(true);
@@ -152,11 +171,11 @@ void fortyLeft() {
   Claw.spinFor(forward, 0.75, sec);
   Claw.setBrake(vex::brakeType::hold);
   wait(0.5, sec);
-  Drivetrain.turnFor(right, 86, deg);
+  Drivetrain.turnFor(left, 86, deg);
   Drivetrain.driveFor(forward, 85, inches, false);
   wait(1.825, sec);
   Claw.spinFor(reverse, 1.3, sec);
-  Drivetrain.turnFor(left, 115, deg);
+  Drivetrain.turnFor(right, 115, deg);
   Drivetrain.driveFor(forward, 120, inches);
 }
 
@@ -176,11 +195,11 @@ void fortyRight() {
   Claw.spinFor(forward, 0.75, sec);
   Claw.setBrake(vex::brakeType::hold);
   wait(0.5, sec);
-  Drivetrain.turnFor(left, 86, deg);
+  Drivetrain.turnFor(right, 86, deg);
   Drivetrain.driveFor(forward, 85, inches, false);
   wait(1.825, sec);
   Claw.spinFor(reverse, 1.3, sec);
-  Drivetrain.turnFor(right, 130, deg);
+  Drivetrain.turnFor(left, 130, deg);
   Drivetrain.driveFor(forward, 120, inches);
 }
 
@@ -200,166 +219,77 @@ void skills() {
   wait(0.8, seconds);
   Claw.setVelocity(50, pct);
   Claw.spinFor(reverse, 1, seconds);//0.75
-  Drivetrain.driveFor(reverse, 17.5, inches, true);
+  Drivetrain.driveFor(reverse, 15, inches, true);
   Claw.setBrake(vex::brakeType::hold);
   Drivetrain.setTurnVelocity(100, pct);
-  Drivetrain.turnFor(right, 193.5, deg);//197.5 //190
+  Drivetrain.turnFor(left, 130, deg);//193.5 //130
+  inertialGyro(-93.5, true);
+  wait(100, msec);
   
   //Get yellow mobile goal and stack
-  Drivetrain.stop();
-  Drivetrain.driveFor(reverse, 120, inches, false);
-  wait(2.5, seconds);
+  Drivetrain.driveFor(reverse, 80, inches, false);//120
+  wait(2, seconds);
   Frontclamp.set(true);
-  wait(0.5, sec);
-  Drivetrain.turnFor(right, 90, degrees);//92.5
-  Drivetrain.stop();
   wait(100, msec);
-  Drivetrain.driveFor(reverse, 82.5, inches, false);
-  //wait(0.1, sec);
+  Drivetrain.turnFor(left, 80, degrees, true);//90
+  inertialGyro(-135, true);
   Lift.setVelocity(100, pct);
   Lift.spinFor(forward, 2.2, seconds);
-  RightDriveSmart.setVelocity(100, pct);
-  RightDriveSmart.spinFor(forward, 0.5, seconds);
+  wait(100, msec);
+  Claw.setBrake(vex::brakeType::hold);
+  Drivetrain.driveFor(reverse, 62.5, inches, true);//82.5
+  inertialGyro(-90, true);
+  Drivetrain.driveFor(reverse, 10, inches, true);
   wait(0.5, seconds);
-  Lift.spinFor(reverse, 0.8, seconds);
+  Lift.spinFor(reverse, 1.2, seconds);
   Frontclamp.set(false);
   wait(.8, sec);
-  Drivetrain.driveFor(forward, 10, inches, false);
-  Lift.spinFor(forward, 0.4, sec);
-  wait(0.2, sec);
-  Drivetrain.driveFor(forward, 10, inches, false);
+  Lift.spinFor(forward, 0.8, sec);
+  Drivetrain.driveFor(forward, 7.5, inches, false);
   Lift.spinFor(forward, 0.4, seconds);//0.4
   
 
   //Take win point mobile goal and stack on opposite bridge
   wait(1, sec);
-  Drivetrain.turnFor(left, 191, degrees);//200
+  Lift.spinFor(reverse, 2, seconds);
+  wait(1, sec);
+  inertialGyro(-3, true); //Drivetrain.turnFor(right, 120, degrees);//191 //127
   Drivetrain.stop();
   wait(1, sec);
-  Lift.spinFor(reverse, 2, seconds);
-  Drivetrain.driveFor(reverse, 95, inches, false);
+  Drivetrain.driveFor(reverse, 58, inches, false);//95
   Frontclamp.set(false);
-  wait (2, seconds);
+  wait (1.75, seconds);
   Frontclamp.set(true);
   wait(0.5, sec);
   Drivetrain.driveFor(forward, 10, inches, true);
-  Drivetrain.turnFor(left, 297.5, degrees);//300 //292.5
+  inertialGyro(110, true); //Drivetrain.turnFor(right, 180, degrees);//297.5
   Drivetrain.stop();
-  Drivetrain.driveFor(reverse, 180, inches, false); //160
+  Drivetrain.driveFor(reverse, 110, inches, false); //180
   wait(1.4, sec);//2
   Lift.spinFor(forward, 2, seconds);
   wait(2, sec);
-  LeftDriveSmart.spinFor(forward, 0.5, seconds);
-  wait(0.5, seconds);
-  Lift.spinFor(reverse, 0.6, seconds);
+  inertialGyro(-90, true);
+  Lift.spinFor(reverse, 1.2, seconds);
   Frontclamp.set(false);
-  wait(1, sec);
+  wait(.8, sec);
+  Lift.spinFor(forward, 0.8, sec);
+  Drivetrain.driveFor(forward, 7.5, inches, false);
+  Lift.spinFor(forward, 0.4, seconds);//0.4
   Drivetrain.driveFor(forward, 10, inches, false);
-  Lift.spinFor(forward, 0.4, sec);
-  wait(0.4, sec);
-  Drivetrain.driveFor(forward, 10, inches, true);
-  //Drivetrain.turnFor(right, 10, degrees);
-  Lift.spinFor(forward, 0.6, seconds);
-  Drivetrain.turnFor(right, 30, degrees);//
-  Drivetrain.driveFor(forward, 110, inches); //90
+  Lift.spinFor(reverse, 2, seconds);
+  Drivetrain.driveFor(forward, 68, inches); //110
 
   //140
-  Drivetrain.turnFor(left, 102.5, deg);
+  Drivetrain.turnFor(right, 33, deg);//102
   Lift.spinFor(reverse, 2, sec);
   Frontclamp.set(false);
   wait(0.5, sec);
-  Drivetrain.driveFor(reverse, 120, inches, false);
+  Drivetrain.driveFor(reverse, 74, inches, false);//120
   wait(2, sec);
   Frontclamp.set(true);
   wait(0.8, sec);
-  Drivetrain.driveFor(forward, 170, inches, true);
+  Drivetrain.driveFor(forward, 104, inches, true);//170
   Drivetrain.stop();
-}
-
-
-//constants to modify in the future
-double kP = 0.12;
-double kI = 0.12; //0.12
-double kD = 0.12; //0.12
-
-double turnkP = 1;
-double turnkI = 1;
-double turnkD = 1;
-
-int error; //position - desired value
-int prevError = 0; //position 20 ms ago
-int derivative; //error - prevError;
-int totalError = 0; //totalError = totalError + error;
-
-int turnError;
-int turnPrevError = 0;
-int turnDerivative;
-int turnTotalError = 0;
-
-bool resetDriveSensors = false;
-
-
-//centimeters / 7pi * 360
-double desiredValue = 0;
-double desiredTurnValue = 0;
-
-
-int drivePID() {
-
-  while (pid) {
-
-
-    if (resetDriveSensors) {
-      resetDriveSensors = false;
-
-      LeftDriveSmart.setPosition(0, degrees);
-      RightDriveSmart.setPosition(0, degrees);
-    }
-
-    int leftMotorPosition = LeftDriveSmart.position(degrees) ;
-    int rightMotorPosition = RightDriveSmart.position(degrees) ;
-
-    int avgPos = (leftMotorPosition + rightMotorPosition)/2;
-
-    desiredValue *= (360/(4 * 3.14159));
-
-    //Potential
-    error = avgPos - desiredValue;
-
-    //Derivative
-    derivative = error - prevError;
-
-    //Integral 
-    totalError += error;
-
-    //Turn Potential
-    //turnError = DrivetrainInertial.heading() - desiredTurnValue;
-
-    //Derivative
-    turnDerivative = turnError - turnPrevError;
-
-    //Integral
-    turnTotalError += turnError;
-
-    double motorPower = error * kP + derivative * kD + totalError * kI;
-    c1.Screen.clearLine(3);
-    c1.Screen.print(error);
-
-    double turnMotorPower = turnError * kP + turnDerivative * kD + turnTotalError * kI * 0;
-
-    LeftDriveSmart.spin(forward, motorPower + turnMotorPower, volt);
-    RightDriveSmart.spin(forward, motorPower - turnMotorPower, volt);
-
-
-
-    prevError = error;
-    turnPrevError = turnError;
-
-    vex::task::sleep(2000);
-  }
-
-
-  return 1;
 }
 
 /*---------------------------------------------------------------------------*/
@@ -396,10 +326,10 @@ void autonomous(void) {
 
   // vex::task::sleep(1000);
   // resetDriveSensors = true;
-  pid = true;
-  vex::task PID(drivePID);
-  resetDriveSensors = true;
-  desiredValue = 0;
+  //pid = true;
+  // vex::task PID(drivePID);
+  // resetDriveSensors = true;
+  // desiredValue = 0;
 
   //desiredValue = 3;
 
@@ -422,12 +352,6 @@ void autonomous(void) {
   //7 is 40 right
   //default is auton default
   runAuton(5);
-
-
-
-
-
-  
 
   wait(20, msec);
   
