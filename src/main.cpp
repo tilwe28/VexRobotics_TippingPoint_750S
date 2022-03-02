@@ -48,12 +48,6 @@ bool pid = false;
 
 //vex::brakeType::hold;
 
-/*
- * With new speed 
- * multiply distance value by about 0.611
- * multiply turn value by about 0.66
- */
-
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
@@ -65,19 +59,30 @@ void pre_auton(void) {
   RightDriveSmart.setStopping(brakeType::brake);
 
   DrivetrainInertial.setHeading(0, deg);
-
+  Ddd.setTurnThreshold(2);
 
 }
 
-void inertialGyro(double d, bool b) {
-
-  Ddd.turnToHeading(d, degrees, b);
-  
-  while (Ddd.isTurning()) {
-    if (Ddd.heading() + 1 == d || Ddd.heading()-1 == d)
-      Ddd.stop();
+void turnRight(double d) {
+  Drivetrain.setTurnVelocity(25, pct);
+  Drivetrain.turn(left);
+  while (true) {
+    if (DrivetrainInertial.rotation()<=d) {
+      Drivetrain.stop();
+      break;
+    }
   }
+}
 
+void turnLeft(double d) {
+  Drivetrain.setTurnVelocity(25, pct);
+  Drivetrain.turn(right);
+  while (true) {
+    if (DrivetrainInertial.rotation()>=d) {
+      Drivetrain.stop();
+      break;
+    }
+  }
 }
 
 void autonRightSideWinAndMiddle() {
@@ -85,9 +90,8 @@ void autonRightSideWinAndMiddle() {
   Lift.setStopping(vex::brakeType::hold);
   Claw.setBrake(vex::brakeType::hold);
 
-  // LeftDriveSmart.spinFor(reverse, 1.05, seconds); (if shit goes wrong)
   Frontclamp.set(false);
-  Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.setTurnVelocity(25, pct);
   Drivetrain.turnFor(left, 97.5, deg);
   Drivetrain.setDriveVelocity(200,rpm);
   Drivetrain.driveFor(reverse, 52, inches, false);
@@ -119,7 +123,7 @@ void autonLeftSideWinPoint() {
   Drivetrain.driveFor(forward, 20, inches);
   Frontclamp.set(false);
   Drivetrain.driveFor(forward, 10, inches, true);
-  Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.setTurnVelocity(25, pct);
   Drivetrain.turnFor(right, 120, degrees);
   Drivetrain.driveFor(reverse, 170, inches, false);
   wait(3, sec);
@@ -134,14 +138,14 @@ void autonMiddle() {
   Claw.setBrake(vex::brakeType::hold);  
 
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(reverse, 175, inches, false);
+  Drivetrain.driveFor(reverse, 100, inches, false);
   Frontclamp.set(false);
   Lift.setVelocity(100, pct);
   Lift.spinFor(reverse, 0.5, sec);
-  wait(3, seconds);
+  wait(2, seconds);
   Frontclamp.set(true);
   wait(0.5, sec);
-  Drivetrain.driveFor(forward, 160, inches, true);
+  Drivetrain.driveFor(forward, 100, inches, true);
 }
 
 void autonDefault() {
@@ -160,7 +164,7 @@ void fortyLeft() {
   Claw.setBrake(vex::brakeType::hold);
 
 
-  Drivetrain.setDriveVelocity(200, rpm);
+  Drivetrain.setDriveVelocity(150, rpm);
   Drivetrain.driveFor(reverse, 160, inches, false);
   Frontclamp.set(false);
   Lift.setVelocity(100, pct);
@@ -185,22 +189,23 @@ void fortyRight() {
 
 
   Drivetrain.setDriveVelocity(200, rpm);
-  Drivetrain.driveFor(reverse, 160, inches, false);
+  Drivetrain.driveFor(reverse, 110, inches, false);
   Frontclamp.set(false);
   Lift.setVelocity(100, pct);
   Lift.spinFor(reverse, 0.5, sec);
-  wait(2.75, seconds);
+  wait(2, seconds);
   Frontclamp.set(true);
   Claw.setVelocity(100, pct);
   Claw.spinFor(forward, 0.75, sec);
   Claw.setBrake(vex::brakeType::hold);
   wait(0.5, sec);
-  Drivetrain.turnFor(right, 86, deg);
-  Drivetrain.driveFor(forward, 85, inches, false);
-  wait(1.825, sec);
+  Drivetrain.turnFor(right, 62, deg);
+  Ddd.turnToHeading(40, deg, true);
+  Drivetrain.driveFor(forward, 60, inches, false);
+  wait(1.2, sec);
   Claw.spinFor(reverse, 1.3, sec);
-  Drivetrain.turnFor(left, 130, deg);
-  Drivetrain.driveFor(forward, 120, inches);
+  Drivetrain.turnFor(left, 145, deg);
+  Drivetrain.driveFor(forward, 90, inches);
 }
 
 void skills() {
@@ -208,7 +213,9 @@ void skills() {
   Lift.setStopping(vex::brakeType::hold);
   Claw.setBrake(vex::brakeType::hold);
 
-  //Get mobile goal on back and turn
+  Drivetrain.setTurnVelocity(25, pct);
+
+  //Pick up mobile goal onto back
   Lift.setVelocity(100, pct);
   Lift.spinFor(reverse, 0.5, seconds);
   Frontclamp.set(false);
@@ -218,77 +225,83 @@ void skills() {
   Drivetrain.driveFor(forward, 20, inches, false);
   wait(0.8, seconds);
   Claw.setVelocity(50, pct);
-  Claw.spinFor(reverse, 1, seconds);//0.75
+  Claw.spinFor(reverse, 1, seconds);
   Drivetrain.driveFor(reverse, 15, inches, true);
   Claw.setBrake(vex::brakeType::hold);
-  Drivetrain.setTurnVelocity(100, pct);
-  Drivetrain.turnFor(left, 130, deg);//193.5 //130
-  inertialGyro(-93.5, true);
+
+  //Turn and get yellow mobile goal and clear rings
+  Drivetrain.turnFor(left, 130, deg);
+  Ddd.turnToHeading(-93.5, deg, true);
   wait(100, msec);
-  
-  //Get yellow mobile goal and stack
-  Drivetrain.driveFor(reverse, 80, inches, false);//120
+  Drivetrain.driveFor(reverse, 130, inches, false);
   wait(2, seconds);
   Frontclamp.set(true);
   wait(100, msec);
-  Drivetrain.turnFor(left, 80, degrees, true);//90
-  inertialGyro(-135, true);
+  wait(1.5, sec);
+  turnRight(-175);
+  Drivetrain.driveFor(reverse, 55, inches, true);
+
+  //Stack mobile goal
   Lift.setVelocity(100, pct);
-  Lift.spinFor(forward, 2.2, seconds);
-  wait(100, msec);
+  Lift.spinFor(forward, 2.5, seconds);
+  turnLeft(-87.5);
+  Drivetrain.driveFor(reverse, 15, inches, true);
   Claw.setBrake(vex::brakeType::hold);
-  Drivetrain.driveFor(reverse, 62.5, inches, true);//82.5
-  inertialGyro(-90, true);
-  Drivetrain.driveFor(reverse, 10, inches, true);
-  wait(0.5, seconds);
+  wait(100, msec);
+  wait(0.1, seconds);
   Lift.spinFor(reverse, 1.2, seconds);
   Frontclamp.set(false);
-  wait(.8, sec);
+  wait(.4, sec);
   Lift.spinFor(forward, 0.8, sec);
-  Drivetrain.driveFor(forward, 7.5, inches, false);
-  Lift.spinFor(forward, 0.4, seconds);//0.4
-  
+  wait(0.8, sec);
+  Drivetrain.driveFor(forward, 15, inches, true);
 
-  //Take win point mobile goal and stack on opposite bridge
-  wait(1, sec);
+  //Take win point mobile goal
+  turnLeft(-21);
+  Drivetrain.driveFor(reverse, 70, inches, false);
   Lift.spinFor(reverse, 2, seconds);
-  wait(1, sec);
-  inertialGyro(-3, true); //Drivetrain.turnFor(right, 120, degrees);//191 //127
-  Drivetrain.stop();
-  wait(1, sec);
-  Drivetrain.driveFor(reverse, 58, inches, false);//95
-  Frontclamp.set(false);
-  wait (1.75, seconds);
+  wait (0.15, seconds);
   Frontclamp.set(true);
   wait(0.5, sec);
   Drivetrain.driveFor(forward, 10, inches, true);
-  inertialGyro(110, true); //Drivetrain.turnFor(right, 180, degrees);//297.5
-  Drivetrain.stop();
-  Drivetrain.driveFor(reverse, 110, inches, false); //180
-  wait(1.4, sec);//2
-  Lift.spinFor(forward, 2, seconds);
-  wait(2, sec);
-  inertialGyro(-90, true);
+  turnLeft(107);
+
+  //Go to opposite bridge and stack
+  Drivetrain.driveFor(reverse, 90, inches, true);
+  Lift.spinFor(forward, 2, sec);
+  Drivetrain.driveFor(reverse, 15, inches);
+  turnRight(97);
+  Drivetrain.driveFor(reverse, 10, inches, true);
   Lift.spinFor(reverse, 1.2, seconds);
   Frontclamp.set(false);
   wait(.8, sec);
   Lift.spinFor(forward, 0.8, sec);
-  Drivetrain.driveFor(forward, 7.5, inches, false);
-  Lift.spinFor(forward, 0.4, seconds);//0.4
-  Drivetrain.driveFor(forward, 10, inches, false);
-  Lift.spinFor(reverse, 2, seconds);
-  Drivetrain.driveFor(forward, 68, inches); //110
 
-  //140
-  Drivetrain.turnFor(right, 33, deg);//102
-  Lift.spinFor(reverse, 2, sec);
-  Frontclamp.set(false);
-  wait(0.5, sec);
-  Drivetrain.driveFor(reverse, 74, inches, false);//120
-  wait(2, sec);
+  //Push big middle mobile goal back
+  turnLeft(85);
+  Drivetrain.driveFor(forward, 80, inches, false);
+  Lift.spinFor(reverse, 2, seconds);
+
+  //Turn and clamp last yellow mobile goal
+  turnLeft(138);
+  Drivetrain.driveFor(reverse, 50, inches, false);
+  wait(1.2, sec);
   Frontclamp.set(true);
   wait(0.8, sec);
-  Drivetrain.driveFor(forward, 104, inches, true);//170
+
+  //Align to stack mobile goal
+  turnRight(52);
+  Drivetrain.driveFor(reverse, 70, inches, true);
+  Lift.spinFor(forward, 2.5, seconds);
+  turnLeft(85);
+  Drivetrain.driveFor(reverse, 30, inches, true);
+  Lift.spinFor(reverse, 1.2, sec);
+  Frontclamp.set(false);
+  wait(0.2, sec);
+  Lift.spinFor(forward, 0.8, sec);
+
+  //Go back to score mobile goal on back
+  Drivetrain.driveFor(forward, 100, inches, true);
   Drivetrain.stop();
 }
 
@@ -372,11 +385,14 @@ void autonomous(void) {
 void usercontrol(void) {
 
   pid = false;
+  Brain.Screen.setCursor(10, 10);
 
   //c1.Screen.print(10);
 
   while(true) {
     //c1.Screen.clearLine(3);
+
+    Brain.Screen.print(DrivetrainInertial.rotation());
 
     //drive
     double turnImportance = 0.5;
