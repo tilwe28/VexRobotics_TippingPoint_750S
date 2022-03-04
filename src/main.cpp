@@ -85,6 +85,18 @@ void turnLeft(double d) {
   }
 }
 
+void balanceOnBridge(double d) {
+  while (DrivetrainInertial.pitch() != d)
+  {
+    double speed = DrivetrainInertial.pitch();
+    if (speed > 100) speed = 100;
+    if (speed < -100) speed = -100;
+    Drivetrain.setDriveVelocity(speed, pct);
+    Drivetrain.drive(reverse);
+  }
+  Drivetrain.stop();
+}
+
 void autonRightSideWinAndMiddle() {
 
   Lift.setStopping(vex::brakeType::hold);
@@ -230,12 +242,15 @@ void skills() {
   Claw.setBrake(vex::brakeType::hold);
 
   //Turn and get yellow mobile goal and clear rings
-  Drivetrain.turnFor(left, 130, deg);
+  Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.turnFor(left, 130, deg, true);
   Ddd.turnToHeading(-93.5, deg, true);
+  Drivetrain.setTurnVelocity(25, pct);
   wait(100, msec);
   Drivetrain.driveFor(reverse, 130, inches, false);
   wait(2, seconds);
   Frontclamp.set(true);
+  Lift.spinFor(forward, 250, msec);
   wait(100, msec);
   wait(1.5, sec);
   turnRight(-175);
@@ -257,21 +272,22 @@ void skills() {
   Drivetrain.driveFor(forward, 15, inches, true);
 
   //Take win point mobile goal
-  turnLeft(-21);
-  Drivetrain.driveFor(reverse, 70, inches, false);
+  turnLeft(-20);
+  Drivetrain.driveFor(reverse, 90, inches, false);
   Lift.spinFor(reverse, 2, seconds);
-  wait (0.15, seconds);
+  wait (0.25, seconds);
   Frontclamp.set(true);
+  Lift.spinFor(forward, 250, msec);
   wait(0.5, sec);
   Drivetrain.driveFor(forward, 10, inches, true);
-  turnLeft(107);
+  turnLeft(111);
 
   //Go to opposite bridge and stack
-  Drivetrain.driveFor(reverse, 90, inches, true);
+  Drivetrain.driveFor(reverse, 95, inches, true);
   Lift.spinFor(forward, 2, sec);
   Drivetrain.driveFor(reverse, 15, inches);
   turnRight(97);
-  Drivetrain.driveFor(reverse, 10, inches, true);
+  Drivetrain.driveFor(reverse, 25, inches, true);
   Lift.spinFor(reverse, 1.2, seconds);
   Frontclamp.set(false);
   wait(.8, sec);
@@ -279,31 +295,179 @@ void skills() {
 
   //Push big middle mobile goal back
   turnLeft(85);
-  Drivetrain.driveFor(forward, 80, inches, false);
+  Drivetrain.driveFor(forward, 90, inches, false);
   Lift.spinFor(reverse, 2, seconds);
 
-  //Turn and clamp last yellow mobile goal
-  turnLeft(138);
-  Drivetrain.driveFor(reverse, 50, inches, false);
-  wait(1.2, sec);
-  Frontclamp.set(true);
-  wait(0.8, sec);
+  //Turn and push last yellow mobile goal in zone
+  turnLeft(172);
+  Drivetrain.driveFor(reverse, 65, inches, true);
+  turnRight(90);
+  Drivetrain.driveFor(forward, 15, inches, true);
+  Claw.spinFor(forward, 1.3, seconds);
+  Claw.setBrake(vex::brakeType::hold);
+  Drivetrain.driveFor(reverse, 80, inches, true);
+  Claw.spinFor(reverse, 1, sec);
 
-  //Align to stack mobile goal
-  turnRight(52);
-  Drivetrain.driveFor(reverse, 70, inches, true);
-  Lift.spinFor(forward, 2.5, seconds);
-  turnLeft(85);
+  //Turn and push other win point mobile goal in zone
+  Drivetrain.driveFor(forward, 10, inches, true);
+  turnLeft(130);
   Drivetrain.driveFor(reverse, 30, inches, true);
-  Lift.spinFor(reverse, 1.2, sec);
+  Frontclamp.set(true);
+  Drivetrain.driveFor(forward, 10, inches, false);
+  turnLeft(270);
+  Drivetrain.driveFor(reverse, 100, inches, true);
+  Drivetrain.stop();
+
+}
+
+void skills2() {
+
+  Lift.setStopping(vex::brakeType::hold);
+  Claw.setBrake(vex::brakeType::hold);
+
+  Drivetrain.setTurnVelocity(25, pct);
+
+  //Pick up mobile goal onto back
+  Lift.spinFor(reverse, 0.5, seconds);
   Frontclamp.set(false);
-  wait(0.2, sec);
+  Claw.setVelocity(100, pct);
+  Claw.spinFor(forward, 0.75, seconds);
+  Drivetrain.setDriveVelocity(200, rpm);
+  Drivetrain.driveFor(forward, 20, inches, false);
+  wait(0.8, seconds);
+  Claw.setVelocity(50, pct);
+  Claw.spinFor(reverse, 1, seconds);
+  Drivetrain.driveFor(reverse, 15, inches, true);
+  Claw.setBrake(vex::brakeType::hold);
+
+  //Turn and get yellow mobile goal and clear rings
+  Drivetrain.setTurnVelocity(100, pct);
+  Drivetrain.turnFor(left, 135, deg, true);
+  Ddd.turnToHeading(-93.5, deg, true);
+  Drivetrain.setTurnVelocity(25, pct);
+  wait(100, msec);
+  Drivetrain.driveFor(reverse, 95, inches, false);
+  wait(2, seconds);
+  Frontclamp.set(true);
+  Lift.spinFor(forward, 500, msec);
+  wait(100, msec);
+  turnRight(-136);
+  Claw.spinFor(forward, 1.3, sec);
+  Drivetrain.driveFor(reverse, 60, inches, false);
+
+  //Stack mobile goal
+  Lift.setVelocity(100, pct);
+  Lift.spinFor(forward, 2.5, seconds);
+  turnLeft(-85);
+  Drivetrain.driveFor(reverse, 10, inches, true);
+  Lift.spinFor(reverse, 1.2, seconds);
+  Frontclamp.set(false);
+  wait(.4, sec);
+  Lift.spinFor(forward, 0.8, sec);
+  wait(0.8, sec);
+  Drivetrain.driveFor(forward, 15, inches, true);
+  Lift.spinFor(reverse, 0.4, sec);
+
+  //Stack other mobile goal
+  turnLeft(20);
+  Drivetrain.driveFor(reverse, 68, inches, false);
+  Lift.spinFor(reverse, 1.7, sec);
+  Frontclamp.set(true);
+  Lift.spinFor(forward, 500, msec);
+  turnRight(-135);
+  Drivetrain.driveFor(reverse, 75, inches, false);
+  Lift.spinFor(forward, 2.5, seconds);
+  turnLeft(-95);
+  Drivetrain.driveFor(reverse, 15, inches, true);
+  Lift.spinFor(reverse, 1.2, seconds);
+  Frontclamp.set(false);
+  wait(.4, sec);
+  Lift.spinFor(forward, 0.8, sec);
+  wait(0.8, sec);
+  Drivetrain.driveFor(forward, 15, inches, true);
+
+  //Take win point mobile goal
+  turnLeft(-17);
+  Drivetrain.driveFor(reverse, 90, inches, false);
+  Lift.spinFor(reverse, 2, seconds);
+  wait (0.25, seconds);
+  Frontclamp.set(true);
+  Lift.spinFor(forward, 500, msec);
+  wait(0.5, sec);
+  Drivetrain.driveFor(forward, 10, inches, true);
+  turnLeft(111);
+
+  //Go to opposite bridge and stack
+  Drivetrain.driveFor(reverse, 120, inches, true);
+  Lift.spinFor(forward, 2, sec);
+  Drivetrain.driveFor(reverse, 15, inches);
+  turnRight(97);
+  Drivetrain.driveFor(reverse, 25, inches, true);
+  Lift.spinFor(reverse, 1.2, seconds);
+  Frontclamp.set(false);
+  wait(.8, sec);
   Lift.spinFor(forward, 0.8, sec);
 
-  //Go back to score mobile goal on back
-  Drivetrain.driveFor(forward, 100, inches, true);
+  //Push big middle mobile goal back
+  turnLeft(85);
+  Drivetrain.driveFor(forward, 90, inches, false);
+  Lift.spinFor(reverse, 2, seconds);
+
+  //Turn and push last yellow mobile goal in zone
+  turnLeft(172);
+  Drivetrain.driveFor(reverse, 65, inches, true);
+  turnRight(90);
+  Drivetrain.driveFor(reverse, 80, inches, true);
+  Claw.spinFor(reverse, 1, sec);
+
+  //Turn and push other win point mobile goal in zone
+  Drivetrain.driveFor(forward, 10, inches, true);
+  turnLeft(130);
+  Drivetrain.driveFor(reverse, 15, inches, true);
+  Frontclamp.set(true);
+  Drivetrain.driveFor(forward, 10, inches, false);
+  turnLeft(220);
+  Drivetrain.driveFor(reverse, 100, inches, true);
+  Drivetrain.stop();
+
+}
+
+void skillsBalance() {
+  Frontclamp.set(false);
+  Claw.setVelocity(50, pct);
+  Claw.spinFor(reverse, 0.5, sec);
+  Claw.setBrake(vex::brakeType::hold);
+  Lift.setVelocity(100, pct);
+  Lift.spinFor(reverse, 0.5, sec);
+  Drivetrain.setDriveVelocity(75, pct);
+  Drivetrain.driveFor(reverse, 100, inches, false);
+  wait(0.7, sec);
+  Frontclamp.set(true);
+  Lift.spinFor(forward, 0.8, sec);
+  Lift.setStopping(vex::brakeType::hold);
+  wait(2, sec);
+  Drivetrain.setDriveVelocity(30, pct);
+
+  while(DrivetrainInertial.pitch() >= 9.5)
+  {
+    Drivetrain.drive(reverse);
+  }
+  Drivetrain.driveFor(forward, 10, inches);
+
+  // while (DrivetrainInertial.pitch() <= -10 && DrivetrainInertial.pitch() >= 9)
+  // {
+  //   c1.Screen.clearLine(3);
+  //   double speed = DrivetrainInertial.pitch();
+  //   if (speed > 100) speed = 100;
+  //   if (speed < -100) speed = -100;
+  //   c1.Screen.print(speed);
+  //   Drivetrain.setDriveVelocity(speed*10, pct);
+  //   Drivetrain.drive(reverse);
+  // }
+
   Drivetrain.stop();
 }
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -324,6 +488,8 @@ void runAuton(int index) {
     case 5: skills(); break;
     case 6: fortyLeft(); break;
     case 7: fortyRight(); break;
+    case 8: skills2(); break;
+    case 9: skillsBalance(); break;
     default: autonDefault(); break;
   }
 }
@@ -364,7 +530,7 @@ void autonomous(void) {
   //6 is 40 left
   //7 is 40 right
   //default is auton default
-  runAuton(5);
+  runAuton(9);
 
   wait(20, msec);
   
