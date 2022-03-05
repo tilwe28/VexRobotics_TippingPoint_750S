@@ -85,37 +85,37 @@ void guiMotorTemps() {
 
   //LeftBack
   //Brain.Screen.printAt(24, 56, "LeftBack");
-  Brain.Screen.setFillColor(returnColor(0));
+  Brain.Screen.setFillColor(green);//returnColor(0)
   Brain.Screen.drawRectangle(10, 10, 56, 56);
 
   //LeftFront
   //Brain.Screen.printAt(135, 56, "LeftFront");
-  Brain.Screen.setFillColor(returnColor(1));
+  Brain.Screen.setFillColor(green);//returnColor(1)
   Brain.Screen.drawRectangle(127, 10, 56, 56);
 
   //RightBack
   //Brain.Screen.printAt(250, 56, "RightBack");
-  Brain.Screen.setFillColor(returnColor(2));
+  Brain.Screen.setFillColor(green);//returnColor(2)
   Brain.Screen.drawRectangle(10, 206, 56, 56);
 
   //RightFront
   //Brain.Screen.printAt(24, 56, "RightFront");
-  Brain.Screen.setFillColor(returnColor(3));
+  Brain.Screen.setFillColor(green);//returnColor(3)
   Brain.Screen.drawRectangle(127, 206, 56, 56);
 
   //LiftA
   //Brain.Screen.printAt(24, 56, "LiftA");
-  Brain.Screen.setFillColor(returnColor(4));
+  Brain.Screen.setFillColor(green);//returnColor(4)
   Brain.Screen.drawRectangle(30, 75, 56, 56);
 
   //LiftB
   //Brain.Screen.printAt(24, 56, "LiftB");
-  Brain.Screen.setFillColor(returnColor(5));
+  Brain.Screen.setFillColor(green);//returnColor(5)
   Brain.Screen.drawRectangle(105, 75, 56, 56);
 
   //Claw
   //Brain.Screen.printAt(24, 56, "Claw");
-  Brain.Screen.setFillColor(returnColor(6));
+  Brain.Screen.setFillColor(red);//returnColor(6)
   Brain.Screen.drawRectangle(69, 142, 56, 56);
 
 }
@@ -723,6 +723,7 @@ void autonomous(void) {
   //default is auton default
 
   runAuton();
+
   //autonSelector();
 
   wait(20, msec);
@@ -802,7 +803,7 @@ void usercontrol(void) {
       needsToVibrate = 1;
     }
 
-    if (temp >= 80) {
+    if (temp >= 80) {//80
       c1.rumble("..");
     }
 
