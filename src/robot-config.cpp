@@ -24,6 +24,7 @@ motor_group Lift = motor_group(LiftMotorA, LiftMotorB);
 motor Claw = motor(PORT18, ratio36_1, false);
 //motor Clamp = motor(PORT10, ratio18_1, false);
 digital_out Frontclamp = digital_out(Brain.ThreeWirePort.H);
+pot Pot = pot(Brain.ThreeWirePort.G);
 controller c1 = controller(primary);
 
 // VEXcode generated functions
@@ -38,14 +39,6 @@ bool DrivetrainRNeedsToBeStopped_c1 = true;
 
 int x = 1.65;
 
-
-//1 means dont vibrate, 0 means vibrate, 2 means already has vibrated
-int needsToVibrate = 1;
-
-void rumbleController(int rumbling) {
-  if (rumbling == 0) c1.rumble("..");
-}
-
 // define a task that will handle monitoring inputs from c1
 int rc_auto_loop_function_c1() {
   c1.Screen.print(5);
@@ -57,11 +50,6 @@ int rc_auto_loop_function_c1() {
 
 
     if(RemoteControlCodeEnabled) {
-
-
-      if (needsToVibrate == 0) {
-        needsToVibrate = 2;
-      }
 
       // calculate the drivetrain motor velocities from the controller joystick axies
       // left = Axis3 + Axis1
@@ -128,22 +116,6 @@ int rc_auto_loop_function_c1() {
       double temp2 = Clamp.temperature(pct);
       // c1.Screen.print("Clamp: ");
       // c1.Screen.print(temp);
-
-      if (temp >= 70) {//70
-        if (needsToVibrate == 1)//75
-          needsToVibrate = 0;
-      } else {
-        needsToVibrate = 1;
-      }
-
-      if (temp >= 80) {
-        c1.rumble("..");
-      }
-
-      rumbleController(needsToVibrate);
-
-      
-
 
       // check the ButtonL1/ButtonL2 status to control Claw
       if (c1.ButtonL1.pressing()) {

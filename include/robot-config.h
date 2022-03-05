@@ -13,8 +13,14 @@ extern motor_group Lift;
 extern motor Claw;
 extern motor Clamp;
 extern digital_out Frontclamp;
+extern pot Pot;
 extern controller c1;
-
+extern motor leftMotorA;
+extern motor leftMotorB;
+extern motor rightMotorA;
+extern motor rightMotorB;
+extern motor LiftMotorA;
+extern motor LiftMotorB;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

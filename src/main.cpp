@@ -35,6 +35,133 @@ competition Competition;
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
+int autonSelect = 0;
+int autonMin = 1;
+int autonMax = 9;
+
+//1 is auton default
+//2 is auton middle left
+//3 is auton middle right
+//4 is left side win point
+//5 is right side win point
+//6 is 40 left
+//7 is 40 right
+//8 is skills
+//9 is combined skillss
+//10 is skillsBalance
+std::string autons[10]= {"auton default", "auton middle left", "auton middle right", "left side win point", "right side win point", "40 left", "40 right", "skills", "combined skills", "skillsBalance"};
+
+int colors[] = {255, 65280, 16711680};
+
+motor motors[] = { leftMotorA, leftMotorB, rightMotorA, rightMotorB, LiftMotorA, LiftMotorB, Claw };
+
+int returnColor(int index) {
+
+  //std::cout<< (int)(motors[index].temperature()/33) << std::endl;
+  
+  return colors[(int)(motors[index].temperature()/33)];
+  
+}
+
+void guiAuton() {
+
+  Brain.Screen.clearScreen();
+  Brain.Screen.printAt(1, 40, "Select Auton");
+  Brain.Screen.printAt(1, 200, "Auton Selected =  %s   ", autonSelect);
+  Brain.Screen.setFillColor(red);
+  Brain.Screen.drawRectangle(20, 50, 100, 100);
+  Brain.Screen.drawCircle(300, 75, 25);
+  Brain.Screen.printAt(25, 75, "Select");
+  Brain.Screen.setFillColor(green);
+  Brain.Screen.drawRectangle(170, 50, 100, 100);
+  Brain.Screen.printAt(175, 75, "GO");
+  Brain.Screen.setFillColor(black);
+
+}
+
+void guiMotorTemps() {
+
+  Brain.Screen.clearScreen();
+
+  //LeftBack
+  //Brain.Screen.printAt(24, 56, "LeftBack");
+  Brain.Screen.setFillColor(returnColor(0));
+  Brain.Screen.drawRectangle(10, 10, 56, 56);
+
+  //LeftFront
+  //Brain.Screen.printAt(135, 56, "LeftFront");
+  Brain.Screen.setFillColor(returnColor(1));
+  Brain.Screen.drawRectangle(127, 10, 56, 56);
+
+  //RightBack
+  //Brain.Screen.printAt(250, 56, "RightBack");
+  Brain.Screen.setFillColor(returnColor(2));
+  Brain.Screen.drawRectangle(10, 206, 56, 56);
+
+  //RightFront
+  //Brain.Screen.printAt(24, 56, "RightFront");
+  Brain.Screen.setFillColor(returnColor(3));
+  Brain.Screen.drawRectangle(127, 206, 56, 56);
+
+  //LiftA
+  //Brain.Screen.printAt(24, 56, "LiftA");
+  Brain.Screen.setFillColor(returnColor(4));
+  Brain.Screen.drawRectangle(30, 75, 56, 56);
+
+  //LiftB
+  //Brain.Screen.printAt(24, 56, "LiftB");
+  Brain.Screen.setFillColor(returnColor(5));
+  Brain.Screen.drawRectangle(105, 75, 56, 56);
+
+  //Claw
+  //Brain.Screen.printAt(24, 56, "Claw");
+  Brain.Screen.setFillColor(returnColor(6));
+  Brain.Screen.drawRectangle(69, 142, 56, 56);
+
+}
+
+void autonSelector() {
+
+  bool selectingAuton = true;
+
+  int x = Brain.Screen.xPosition(); // get the x position of last touch of the screen
+  int y = Brain.Screen.yPosition(); // get the y position of last touch of the screen
+  // check to see if buttons were pressed
+  if (x >= 20 && x <= 120 && y >= 50 && y <= 150) // select button pressed
+  {
+    autonSelect++;
+    if (autonSelect > autonMax)autonSelect = autonMin; // rollover
+    switch(autonSelect) {
+      case 1: Brain.Screen.printAt(1, 200, "Auton Selected =               auton default"); break;
+      case 2: Brain.Screen.printAt(1, 200, "Auton Selected =           auton middle left"); break;
+      case 3: Brain.Screen.printAt(1, 200, "Auton Selected =          auton middle right"); break;
+      case 4: Brain.Screen.printAt(1, 200, "Auton Selected =   auton left side win point"); break;
+      case 5: Brain.Screen.printAt(1, 200, "Auton Selected =  auton right side win point"); break;
+      case 6: Brain.Screen.printAt(1, 200, "Auton Selected =               auton 40 left"); break;
+      case 7: Brain.Screen.printAt(1, 200, "Auton Selected =              auton 40 right"); break;
+      case 8: Brain.Screen.printAt(1, 200, "Auton Selected =                   skills og"); break;
+      case 9: Brain.Screen.printAt(1, 200, "Auton Selected =             skills combined"); break;
+      case 10: Brain.Screen.printAt(1, 200, "Auton Selected =            skills parking"); break;
+      default: Brain.Screen.printAt(1, 200, "Auton Selected =                      None"); break;
+    }
+    //Brain.Screen.printAt(1, 200, "Auton Selected =  %d   ", autonSelect);
+  }
+  if (x >= 170 && x <= 270 && y >= 50 && y <= 150) {
+    selectingAuton = false; // GO button pressed
+    Brain.Screen.printAt(1, 200, "Auton  =  %d   GO           ", autonSelect);
+  }
+  if (!selectingAuton) {
+    Brain.Screen.setFillColor(green);
+    Brain.Screen.drawCircle(300, 75, 25);
+  } else {
+    Brain.Screen.setFillColor(red);
+    Brain.Screen.drawCircle(300, 75, 25);
+  }
+  wait(10, msec); // slow it down
+  Brain.Screen.setFillColor(black);
+
+}
+
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
@@ -47,6 +174,10 @@ void pre_auton(void) {
 
   DrivetrainInertial.setHeading(0, deg);
   Ddd.setTurnThreshold(2);
+
+  Brain.Screen.printAt(10, 10, "pre auton is running");
+  guiAuton();
+  Brain.Screen.pressed(autonSelector);
 
 }
 
@@ -508,7 +639,7 @@ void combinedSkills() {
 
   //Turn and push other win point mobile goal in zone
   Drivetrain.driveFor(forward, 10, inches, true);
-  turnLeft(130);
+  turnLeft(128);
   Drivetrain.driveFor(reverse, 36.8, inches, true);
   Frontclamp.set(true);
   Drivetrain.driveFor(forward, 10, inches, false);
@@ -561,8 +692,8 @@ void balance() {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void runAuton(int index) {
-  switch (index) {
+void runAuton() {
+  switch (autonSelect) {
     case 1: autonDefault(); break;
     case 2: autonMiddleLeft(); break;
     case 3: autonMiddleRight(); break;
@@ -591,7 +722,8 @@ void autonomous(void) {
   //10 is skillsBalance
   //default is auton default
 
-  runAuton(9);
+  runAuton();
+  //autonSelector();
 
   wait(20, msec);
   
@@ -607,23 +739,23 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+int needsToVibrate = 1;
+
+void rumbleController(int rumbling) {
+  if (rumbling == 0) c1.rumble("..");
+}
+
 void usercontrol(void) {
 
   Brain.Screen.setCursor(10, 10);
 
-  //c1.Screen.print(10);
-
   while(true) {
-    //c1.Screen.clearLine(3);
-
-    Brain.Screen.print(DrivetrainInertial.rotation());
 
     //drive
     double turnImportance = 0.5;
 
     
     double fP = c1.Axis3.position(percent) * -1;
-    //c1.Screen.print(fP);
     double tP = c1.Axis1.position(percent) * -1;
 
     double tV = tP * 0.12;
@@ -657,6 +789,26 @@ void usercontrol(void) {
     if (c1.ButtonX.pressing())
       Drivetrain.stop();
 
+    double temp = Claw.temperature(pct);
+
+    if (needsToVibrate == 0) {
+        needsToVibrate = 2;
+    }
+
+    if (temp >= 70) {//70
+      if (needsToVibrate == 1)//75
+        needsToVibrate = 0;
+    } else {
+      needsToVibrate = 1;
+    }
+
+    if (temp >= 80) {
+      c1.rumble("..");
+    }
+
+    rumbleController(needsToVibrate);
+
+    guiMotorTemps();
 
     wait(5, msec);
 
